@@ -16,7 +16,7 @@ char **initMatrix(int n, int m){
   return matrix;
 }
 
-void prinfMatrix(char **matrix, int n, int m){
+void printMatrix(char **matrix, int n, int m){
   for(int i = 0; i < n; i++){
     for(int j = 0; j < m; j++){
       printf("%c ", matrix[i][j]);
@@ -39,7 +39,7 @@ int main(int argc, char *argv[]){
   const int N = atoi(argv[1]);
   const int M = atoi(argv[2]);
   char **matrix = initMatrix(N, M);
-  prinfMatrix(matrix, N, M);
+  printMatrix(matrix, N, M);
   freeMatrix(matrix, N);
   return 0;
 }
