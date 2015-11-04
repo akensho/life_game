@@ -1,14 +1,16 @@
-#include<stdio.h>
-#include<stdlib.h>
-#include<stdbool.h>
+#include<life_game.h>
 
-char **initMatrix(int n, int m){
+char **allocateMemory(int n, int m){
   char **matrix;
-  srand(1234);
   matrix = malloc(sizeof(char *) * n);
   for(int i = 0; i < n; i++){
     matrix[i] = malloc(sizeof(char) * m);
   }
+  return matrix;
+}
+
+void **initMatrix(char **matrix, int n, int m){
+  srand(1234);
   for(int i = 0; i < n; i++){
     for(int j = 0; j < m; j++){
       if( rand() % 2 == 0 ){
@@ -18,7 +20,6 @@ char **initMatrix(int n, int m){
       }
     }
   }
-  return matrix;
 }
 
 void printMatrix(char **matrix, int n, int m){
@@ -44,11 +45,27 @@ int countSurvivors(char **matrix, int n, int m, int x, int y){
   return res;
 }
 
+void freeMatrix(char **matrix, int n){
+  for(int i = 0; i < n; i++){
+    free(matrix[i]);
+  }
+}
+
 void changeNextSituation(char **matrix, int n, int m){
+  char **copy = allocateMemory(n, m);
   for(int i = 0; i < n; i++){
     for(int j = 0; j < m; j++){
-      int survivors = countSurvivors(matrix, n, m, j, i);
-      if( matrix[i][j] == '*' ){
+      copy[i][j] = matrix[i][j];
+    }
+  }
+  printf("martix\n");
+  printMatrix(matrix, n, m);
+  printf("copy\n");
+  printMatrix(copy, n, m);
+  for(int i = 0; i < n; i++){
+    for(int j = 0; j < m; j++){
+      int survivors = countSurvivors(copy, n, m, j, i);
+      if( copy[i][j] == '*' ){
 	if( survivors <= 1 || survivors >= 4 ){
 	  matrix[i][j] = '?';
 	}
@@ -59,25 +76,23 @@ void changeNextSituation(char **matrix, int n, int m){
       }
     }
   }
-}
-
-void freeMatrix(char **matrix, int n){
-  for(int i = 0; i < n; i++){
-    free(matrix[i]);
-  }
+  freeMatrix(copy, n);
 }
 
 int main(int argc, char *argv[]){
+  printf("sss");
   if( argc != 3 ){
     printf("Error: => 'ex_command' 'row' 'column'\n");
     exit(1);
   }
+  printf("ddd");
   const int N = atoi(argv[1]);
   const int M = atoi(argv[2]);
-  char **matrix = initMatrix(N, M);
+  char **matrix = allocateMemory(N, M);
+  initMatrix(matrix, N, M);
   while( true ) {
     changeNextSituation(matrix, N, M);
-    printMatrix(matrix, N, M);
+    //    printMatrix(matrix, N, M);
   }
   freeMatrix(matrix, N);
   return 0;
